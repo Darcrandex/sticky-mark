@@ -1,0 +1,45 @@
+{
+  "name": "stickymark",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write . --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "@tanstack/react-query": "^5.74.3",
+    "@tanstack/react-query-next-experimental": "^5.74.3",
+    "axios": "^1.8.4",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "next": "15.3.0",
+    "nodemailer": "^6.10.1",
+    "qs": "^6.14.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
+    "@types/qs": "^6.9.18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
