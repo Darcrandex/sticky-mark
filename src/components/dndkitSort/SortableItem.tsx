@@ -16,8 +16,8 @@ export function SortableItem({ id, children }: { id: string; children: any }) {
     margin: '4px',
     width: '300px',
     hieght: 'auto',
-    overflow: "hidden",
-    textAlign: 'center',
+    overflow: 'hidden',
+    // textAlign: 'center',
   }
 
   return (

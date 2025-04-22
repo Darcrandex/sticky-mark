@@ -15,7 +15,7 @@ import SortableGrid from './dndkitSort/SortableGrid'
 // import { MarkPopupManager } from './selfModal/modal'
 
 export default function MarkList() {
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['fetchMarkList'],
     queryFn: fetchMarkList,
   })
@@ -25,11 +25,11 @@ export default function MarkList() {
   const addMutation = useMutation({ mutationFn: fetchAddMark })
 
   useEffect(() => {
-    if (data){
-      console.log("MMMMMMM=marklit=",data)
+    if (data) {
+      console.log('MMMMMMM=marklit=', data)
       setMarkList(data)
     }
-    return ()=>{}
+    return () => {}
   }, [data])
 
   const deleteClick = async (id: string) => {
@@ -56,13 +56,14 @@ export default function MarkList() {
     return (
       <div>
         <h3>Add</h3>
-        <CustomInput />
+        {/* <CustomInput /> */}
       </div>
     )
   }
 
   const addMark = async () => {
     // const res = await MarkPopupManager.confirm({ Component: markItemContent })
+    console.log('addMark', typeof markItemContent)
   }
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error...</div>
@@ -92,7 +93,6 @@ export default function MarkList() {
           </div>
         )}
       />
-      
     </div>
   )
 }

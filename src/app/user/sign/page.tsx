@@ -9,9 +9,9 @@ import { userService } from '@/services/user'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
-export default function Sign() {
+function Sign() {
   const tabs = [
     { title: 'Sign In', key: 'sign-in' },
     { title: 'Sign Up', key: 'sign-up' },
@@ -65,5 +65,13 @@ export default function Sign() {
         </button>
       </main>
     </>
+  )
+}
+
+export default function SignPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Sign />
+    </Suspense>
   )
 }

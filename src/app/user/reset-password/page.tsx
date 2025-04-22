@@ -7,8 +7,9 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
   const search = useSearchParams()
   const token = search.get('token')
 
@@ -33,5 +34,13 @@ export default function ResetPassword() {
         onSubmit
       </button>
     </>
+  )
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }

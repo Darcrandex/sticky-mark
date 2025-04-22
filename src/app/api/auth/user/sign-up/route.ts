@@ -1,5 +1,6 @@
 import { db } from '@/db'
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
+import { hash } from 'bcryptjs'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // 注册
@@ -18,7 +19,7 @@ export async function POST(request: NextRequest) {
 
   // 2. insert
   // 2.1 hashed password
-  const hashedPassword = await bcrypt.hash(password, 10)
+  const hashedPassword = await hash(password, 10)
 
   // 2.2 insert
   const { data: insertData, error: insertError } = await db

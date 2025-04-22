@@ -1,6 +1,7 @@
 import { db } from '@/db'
 import { generateToken } from '@/utils/user-token.server'
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
+import { compare } from 'bcryptjs'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // 登录
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   }
 
   // 2. check password
-  const isPasswordValid = await bcrypt.compare(password, data[0].password)
+  const isPasswordValid = await compare(password, data[0].password)
 
   if (!isPasswordValid) {
     return NextResponse.json({ message: 'Invalid password' }, { status: 400 })

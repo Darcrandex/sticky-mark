@@ -1,8 +1,10 @@
 import { db } from '@/db'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params
+type NextContext<T extends Record<string, string> = any> = { params: Promise<T> }
+
+export async function PUT(request: NextRequest, ctx: NextContext<{ id: string }>) {
+  const { id } = await ctx.params
   const { title, url } = await request.json()
 
   const { data, error } = await db.from('mark').update({ title, url }).eq('id', id)
@@ -20,8 +22,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   })
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function DELETE(request: NextRequest, ctx: NextContext<{ id: string }>) {
+  const { id } = await ctx.params
 
   const { data, error } = await db.from('mark').delete().eq('id', id)
 
@@ -38,8 +40,8 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   })
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function GET(request: NextRequest, ctx: NextContext<{ id: string }>) {
+  const { id } = await ctx.params
 
   const { data, error } = await db.from('mark').select().eq('id', id)
 
