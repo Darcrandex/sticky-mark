@@ -1,7 +1,7 @@
 import MyButton from '@/components/btn'
 import MarkManage from '@/components/MarkManage'
 
-import MarkList from "@/components/MarkList";
+import MarkList from '@/components/MarkList'
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
         <MyButton />
 
         <MarkManage />
-        <MarkList/>
+        <MarkList />
       </section>
     </>
   )
