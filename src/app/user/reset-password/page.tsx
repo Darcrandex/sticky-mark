@@ -6,31 +6,41 @@
 
 'use client'
 
+import { userService } from '@/services/user'
+import { useMutation } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 
 function ResetPasswordContent() {
   const search = useSearchParams()
-  const token = search.get('token')
+  const sign = search.get('sign')
+  const [newPassword, setNewPassword] = useState('')
 
-  const onSubmit = async () => {
-    const data = {
-      newPassword: '123123',
-      token,
-    }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      if (!newPassword || !sign) {
+        throw new Error('newPassword is required')
+      }
 
-    await fetch('/api/auth/pwd/reset', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    })
-  }
+      await userService.resetPwd({ newPassword, sign })
+    },
+  })
 
   return (
     <>
       <h1>ResetPassword</h1>
-      <p>token {token}</p>
+      <p>sign {sign}</p>
 
-      <button type='button' onClick={onSubmit}>
+      <p className='m-4'>
+        <input
+          type='password'
+          className='block border p-2'
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+      </p>
+
+      <button type='button' disabled={isPending} onClick={() => mutate()}>
         onSubmit
       </button>
     </>

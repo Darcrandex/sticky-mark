@@ -1,13 +1,13 @@
 import { db } from '@/db'
-// import bcrypt from 'bcrypt'
 import { hash } from 'bcryptjs'
+import { first } from 'lodash-es'
 import { NextResponse, type NextRequest } from 'next/server'
 
-// 注册
+// 用户注册
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json()
 
-  // 1. check exists
+  // 1. 检查邮箱是否重复
   const { data, error } = await db.from('account').select().eq('email', email)
   if (error) {
     return NextResponse.json({ message: 'Error fetching data', error })
@@ -24,14 +24,15 @@ export async function POST(request: NextRequest) {
   // 2.2 insert
   const { data: insertData, error: insertError } = await db
     .from('account')
-    .insert([{ email, password: hashedPassword }])
+    .insert({ email, password: hashedPassword })
+    .select()
 
   if (insertError) {
     return NextResponse.json({ message: 'Error inserting data', insertError })
   }
 
   return NextResponse.json({
-    message: 'Data inserted successfully',
-    data: insertData,
+    message: 'register successfully',
+    data: first(insertData)?.id,
   })
 }

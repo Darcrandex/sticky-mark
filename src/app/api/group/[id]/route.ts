@@ -4,13 +4,14 @@ import { first } from 'lodash-es'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest, ctx: API.NextContext<{ id: string }>) {
+  const { id } = await ctx.params
   const userId = await getUserIdFromToken(request)
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
-  const { id } = await ctx.params
-  const { data, error } = await db.from('mark').select().eq('id', id).eq('uid', userId)
+  const { data, error } = await db.from('group').select().eq('id', id).eq('uid', userId)
 
   if (error) {
     return NextResponse.json({
@@ -26,14 +27,15 @@ export async function GET(request: NextRequest, ctx: API.NextContext<{ id: strin
 }
 
 export async function PUT(request: NextRequest, ctx: API.NextContext<{ id: string }>) {
+  const { id } = await ctx.params
   const userId = await getUserIdFromToken(request)
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
-  const { id } = await ctx.params
-  const { title, url } = await request.json()
-  const { error } = await db.from('mark').update({ title, url }).eq('id', id).eq('uid', userId)
+  const { name, icon, sort } = await request.json()
+  const { error } = await db.from('group').update({ name, icon, sort }).eq('id', id).eq('uid', userId)
 
   if (error) {
     return NextResponse.json({
@@ -49,13 +51,14 @@ export async function PUT(request: NextRequest, ctx: API.NextContext<{ id: strin
 }
 
 export async function DELETE(request: NextRequest, ctx: API.NextContext<{ id: string }>) {
+  const { id } = await ctx.params
   const userId = await getUserIdFromToken(request)
+
   if (!userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
-  const { id } = await ctx.params
-  const { error } = await db.from('mark').delete().eq('id', id).eq('uid', userId)
+  const { error } = await db.from('group').delete().eq('id', id).eq('uid', userId)
 
   if (error) {
     return NextResponse.json({

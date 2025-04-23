@@ -1,4 +1,8 @@
+import { db } from '@/db'
+import { aesDecrypt, aesEncrypt } from '@/utils/aes.server'
+import { hash } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { first } from 'lodash-es'
 import { NextResponse, type NextRequest } from 'next/server'
 import nodemailer from 'nodemailer'
 
@@ -7,19 +11,15 @@ const adminEmailPassword = process.env.NEXT_APP_ADMIN_EMAIL_KEY
 
 // 忘记密码
 export async function POST(request: NextRequest) {
-  const userId = '123123123'
   const { email } = await request.json()
-
   const transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
     port: 587,
-    auth: {
-      user: adminEmail, // 你的 Gmail 邮箱地址
-      pass: adminEmailPassword, // 你的 Gmail 邮箱密码或应用专用密码
-    },
+    auth: { user: adminEmail, pass: adminEmailPassword },
   })
 
-  const resetToken = jwt.sign({ userId }, process.env.NEXT_APP_JWT_SECRET!, { expiresIn: '1h' })
+  const resetSign = jwt.sign({ email }, process.env.NEXT_APP_JWT_SECRET!, { expiresIn: '1h' })
+  const encryptedResetSign = await aesEncrypt(resetSign)
 
   try {
     // 发送邮件
@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
       to: email,
       subject: '重置登录密码',
       text: '',
-
-      html: `重置链接 <a href="http://localhost:3000/user/reset-password?token=${resetToken}">重置密码</a>`,
+      html: `重置链接 <a href="http://localhost:3000/user/reset-password?sign=${encryptedResetSign}">重置密码</a>`,
     })
 
     return NextResponse.json({ message: '邮件发送成功' })
@@ -41,27 +40,28 @@ export async function POST(request: NextRequest) {
 
 // 重置密码
 export async function PUT(request: NextRequest) {
-  const userIdFromToken = '123123123'
-  const { newPassword, token: queryToken } = await request.json()
-
-  if (!queryToken) {
-    return NextResponse.json({ message: '缺少token' }, { status: 400 })
-  }
+  const { newPassword, sign = '' } = await request.json()
 
   try {
-    const query: any = jwt.verify(queryToken, process.env.NEXT_APP_JWT_SECRET!)
-    const userIdFromQuery = query.userId
+    const decryptedSign = await aesDecrypt(sign)
+    const dataFromSign = jwt.verify(decryptedSign, process.env.NEXT_APP_JWT_SECRET!)
+    const email: string = typeof dataFromSign === 'string' ? dataFromSign : dataFromSign?.email
 
-    return NextResponse.json({
-      message: '密码重置成功',
-      data: {
-        userIdFromQuery,
-        userIdFromToken,
-        newPassword,
-      },
-    })
+    const { data: users, error: selectErr } = await db.from('account').select().eq('email', email)
+    if (selectErr) {
+      return NextResponse.json({ message: '用户不存在' }, { status: 400 })
+    }
+
+    const user = first(users)
+    const hashedPassword = await hash(newPassword, 10)
+    const { error: updateErr } = await db.from('account').update({ password: hashedPassword }).eq('id', user.id)
+
+    if (updateErr) {
+      return NextResponse.json({ message: '密码重置失败' }, { status: 500 })
+    }
+
+    return NextResponse.json({ message: '密码重置成功' })
   } catch (error) {
-    console.error('解析token时出错:', error)
-    return NextResponse.json({ message: 'token解析失败' }, { status: 500 })
+    return NextResponse.json({ message: '密码重置失败' }, { status: 500 })
   }
 }

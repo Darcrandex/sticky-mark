@@ -8,4 +8,12 @@ export const userService = {
   signUp: (data: { email: string; password: string }) => {
     return http.post('/api/auth/user/sign-up', data)
   },
+
+  forgotPwd: (data: { email: string }) => {
+    return http.post('/api/auth/pwd/reset', data)
+  },
+
+  resetPwd: (data: { newPassword: string; sign: string }) => {
+    return http.put('/api/auth/pwd/reset', data)
+  },
 }

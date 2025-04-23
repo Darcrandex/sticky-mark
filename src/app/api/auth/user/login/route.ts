@@ -1,7 +1,7 @@
 import { db } from '@/db'
 import { generateToken } from '@/utils/user-token.server'
-// import bcrypt from 'bcrypt'
 import { compare } from 'bcryptjs'
+import { first } from 'lodash-es'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // 登录
@@ -20,14 +20,14 @@ export async function POST(request: NextRequest) {
   }
 
   // 2. check password
-  const isPasswordValid = await compare(password, data[0].password)
+  const isPasswordValid = await compare(password, first(data).password)
 
   if (!isPasswordValid) {
     return NextResponse.json({ message: 'Invalid password' }, { status: 400 })
   }
 
   // 3. return token
-  const token = await generateToken(data[0].id)
+  const token = await generateToken(first(data).id)
 
   return NextResponse.json({ message: 'Login successful', data: token })
 }
