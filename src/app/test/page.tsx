@@ -35,7 +35,7 @@ export default function TestPage() {
 
       <hr />
 
-      {data?.data && <img src={data?.data} className='block w-20' />}
+      {data?.data && <img src={data?.data} className='block w-20' referrerPolicy='no-referrer' />}
     </>
   )
 }
