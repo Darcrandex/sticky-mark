@@ -22,6 +22,12 @@ export async function POST(request: NextRequest) {
   const encryptedResetSign = await aesEncrypt(resetSign)
 
   try {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://your-app.com/auth/callback', // 重置密码后的回调URL
+    })
+
+    // http://localhost:3000/#access_token=eyJhbGciOiJIUzI1NiIsImtpZCI6ImlzOGRGMFlQSlhVemd1NmciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3hzYm9meGtyaWl3bW5saWN0cGNlLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJiY2UyYThmZS1lZTU4LTQyOWQtYWJmMS04MmZkMjU0NmI2YmMiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzQ3MzgxODY4LCJpYXQiOjE3NDczNzgyNjgsImVtYWlsIjoiZGFyY3JhbmRleEBnbWFpbC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJvdHAiLCJ0aW1lc3RhbXAiOjE3NDczNzgyNjh9XSwic2Vzc2lvbl9pZCI6ImMxYWNkYzFmLWRhMzQtNDcxZS04NjhhLWJhZTRkMGUwODU4ZCIsImlzX2Fub255bW91cyI6ZmFsc2V9.vplrglEV4O9y1ulpDY8VfE55HWiqUjQlYkcXCouY1-Q&expires_at=1747381868&expires_in=3600&refresh_token=mc3nidhdvsgb&token_type=bearer&type=recovery
+
     // 发送邮件
     await transporter.sendMail({
       from: adminEmail,
